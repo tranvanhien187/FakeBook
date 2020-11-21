@@ -13,6 +13,9 @@ public class User {
     private ArrayList<FriendRequests> friendRequestList;          // uId
     private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
 
+    public User() {
+    }
+
     public User(String name, String uId, String dateOfBirth, Boolean isMale) {
         this.name = name;
         this.uId = uId;
