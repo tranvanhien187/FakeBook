@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +19,8 @@ import android.widget.Toast;
 
 import com.example.fakebook.MainActivity;
 import com.example.fakebook.R;
-import com.example.fakebook.adapter.FriendRequestsAdapter;
+
+import com.example.fakebook.adapters.FriendRequestsAdapter;
 import com.example.fakebook.model.FriendRequests;
 import com.example.fakebook.model.Notification;
 import com.example.fakebook.model.User;
@@ -25,33 +28,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.SuccessContinuation;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
+
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.example.fakebook.MainActivity.DB;
-import static com.example.fakebook.MainActivity.friendRequestsArrayList;
 
 public class FriendsFragment extends Fragment {
 
     ArrayList<FriendRequests> requestsArrayList;
     FriendRequestsAdapter adapter;
     RecyclerView recyclerView;
-
+    private boolean mIsLoading;
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
 
 
     @Override
@@ -87,5 +78,21 @@ public class FriendsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
+    }
+
+    public void loadDataWhenScroll() {
+        LinearLayoutManager linearLayoutManager;
+        linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        if (!mIsLoading) {
+            if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() + 1 == requestsArrayList.size()) {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                        mIsLoading = false;
+                    }
+                }, 60);
+            }
+        }
     }
 }

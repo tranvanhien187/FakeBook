@@ -1,4 +1,4 @@
-package com.example.fakebook.adapter;
+package com.example.fakebook.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.example.fakebook.adapter;
+package com.example.fakebook.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -66,7 +66,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
             btnDecline=(Button) view.findViewById(R.id.btn_row_decline_request);
             linearLayout=(LinearLayout) view.findViewById(R.id.row_wait_accept_request);
 
-            imgAvatar.setImageResource(friendRequests.getAvatar());
+//            imgAvatar.setImageResource(friendRequests.getAvatar());
             tvName.setText(friendRequests.getName());
             tvTime.setText(friendRequests.getTime());
             btnAccept.setOnClickListener(new View.OnClickListener() {

@@ -13,26 +13,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.fakebook.R;
-import com.example.fakebook.adapter.NotificationAdapter;
 
+
+import com.example.fakebook.adapters.NotificationAdapter;
 import com.example.fakebook.model.Notification;
 import com.example.fakebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-import static com.example.fakebook.MainActivity.DB;
+
 
 public class NotificationsFragment extends Fragment {
     RecyclerView recyclerView;
     NotificationAdapter adapter;
     ArrayList<Notification> notifications;
-
-    DatabaseReference mData;
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
