@@ -18,21 +18,29 @@ import android.widget.Toast;
 
 import com.example.fakebook.MainActivity;
 import com.example.fakebook.R;
+import com.example.fakebook.model.BlogPost;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +54,7 @@ public class NewPostActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
     private String cur_user_id=null;
+    private int cnt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,20 +100,52 @@ public class NewPostActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     Log.d("link","downloadURL : "+uri.toString());
                                     Toast.makeText(NewPostActivity.this, "uploaded", Toast.LENGTH_SHORT).show();
-                                    Map<String,Object> postMap=new HashMap<>();
+                                    final Map<String,Object> postMap=new HashMap<>();
                                     postMap.put("userId",email);
                                     postMap.put("imageUrl",uri.toString());
                                     postMap.put("text",text);
+                                    postMap.put("liked",false);
                                     postMap.put("timestamp",FieldValue.serverTimestamp());
+                                    postMap.put("cnt",0);
+                                    final Map<String,Object> postMap2=new HashMap<>();
+                                    postMap2.put("userId",email);
+                                    postMap2.put("imageUrl",uri.toString());
+                                    postMap2.put("text",text);
+                                    postMap2.put("liked",false);
+                                    postMap2.put("timestamp",FieldValue.serverTimestamp());
                                     firebaseFirestore.collection("Users").document(email)
                                             .collection("Posts").add(postMap)
                                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                 @Override
                                                 public void onSuccess(DocumentReference documentReference) {
                                                     Toast.makeText(NewPostActivity.this, "added", Toast.LENGTH_SHORT).show();
-                                                    Intent mainIntent=new Intent(NewPostActivity.this,MainActivity.class);
-                                                    startActivity(mainIntent);
-                                                    finish();
+                                                    firebaseFirestore.collection("Users").document(email)
+                                                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                            if(task.isSuccessful()){
+
+                                                                final ArrayList<String> strings= (ArrayList<String>) task.getResult().get("friendList");
+                                                                cnt=0;
+                                                                for(String x:strings){
+                                                                    firebaseFirestore.collection("Users").document(x)
+                                                                            .collection("friendPosts").add(postMap2)
+                                                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                                @Override
+                                                                                public void onSuccess(DocumentReference documentReference) {
+                                                                                    ++cnt;
+                                                                                    if(cnt==strings.size()){
+                                                                                        Intent mainIntent=new Intent(NewPostActivity.this,MainActivity.class);
+                                                                                        startActivity(mainIntent);
+                                                                                        finish();
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                }
+
+                                                            }
+                                                        }
+                                                    });
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {

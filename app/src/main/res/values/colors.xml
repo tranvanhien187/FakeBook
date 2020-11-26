@@ -5,4 +5,6 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="white">#fff</color>
     <color name="black">#FF000000</color>
+    <color name="likeBtnGray">#747474</color>
+    <color name="likeBtnAccent">#CC1A1A</color>
 </resources>

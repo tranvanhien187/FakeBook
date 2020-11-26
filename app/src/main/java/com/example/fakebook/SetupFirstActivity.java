@@ -27,7 +27,9 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -85,11 +87,14 @@ public class SetupFirstActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     Toast.makeText(SetupFirstActivity.this, "put image success !", Toast.LENGTH_SHORT).show();
                                     Map<String,Object> userMap=new HashMap<>();
+                                    List friends=new ArrayList();
+                                    friends.add(email);
                                     userMap.put("name",nickName);
                                     userMap.put("isMale",isMale);
                                     userMap.put("dateOfBirth",ngay+"/"+thang+"/"+nam);
                                     userMap.put("uId",mAuth.getUid());
                                     userMap.put("ava",uri.toString());
+                                    userMap.put("friendList",friends);
                                     firebaseFirestore.collection("Users").document(email)
                                             .set(userMap)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {

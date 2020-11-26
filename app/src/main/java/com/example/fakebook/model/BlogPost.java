@@ -7,7 +7,7 @@ import java.util.Date;
 public class BlogPost {
     public String userId,imageUrl,text;
     public Date timestamp;
-
+    public boolean liked=false;
     public BlogPost(){}
 
     public BlogPost(String userId, String imageUrl, String text, Date timestamp) {
@@ -15,6 +15,14 @@ public class BlogPost {
         this.imageUrl = imageUrl;
         this.text = text;
         this.timestamp=timestamp;
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     public String getUserId() {
