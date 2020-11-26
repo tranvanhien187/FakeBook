@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fakebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,7 +30,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -85,27 +85,45 @@ public class SetupFirstActivity extends AppCompatActivity {
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Toast.makeText(SetupFirstActivity.this, "put image success !", Toast.LENGTH_SHORT).show();
-                                    Map<String,Object> userMap=new HashMap<>();
-                                    List friends=new ArrayList();
-                                    friends.add(email);
-                                    userMap.put("name",nickName);
-                                    userMap.put("isMale",isMale);
-                                    userMap.put("dateOfBirth",ngay+"/"+thang+"/"+nam);
-                                    userMap.put("uId",mAuth.getUid());
-                                    userMap.put("ava",uri.toString());
-                                    userMap.put("friendList",friends);
-                                    firebaseFirestore.collection("Users").document(email)
-                                            .set(userMap)
+                                    User user=new User(uri.toString(),nickName,email,ngay+"/"+thang+"/"+nam,isMale);
+                                    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+                                    DB.collection("Users")
+                                            .document(email)
+                                            .set(user)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    Toast.makeText(SetupFirstActivity.this, "good :v", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(SetupFirstActivity.this, "DarkNight", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                    DB.collection("Users").document(email)
+                                            .update("friendList",new ArrayList<String>()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(SetupFirstActivity.this,"Success", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     Intent mainIntent=new Intent(SetupFirstActivity.this,MainActivity.class);
                                     startActivity(mainIntent);
                                     finish();
-                                                }
-                                            });
+//                                    Toast.makeText(SetupFirstActivity.this, "put image success !", Toast.LENGTH_SHORT).show();
+//                                    Map<String,Object> userMap=new HashMap<>();
+//                                    userMap.put("name",nickName);
+//                                    userMap.put("isMale",isMale);
+//                                    userMap.put("dateOfBirth",ngay+"/"+thang+"/"+nam);
+//                                    userMap.put("uId",mAuth.getUid());
+//                                    userMap.put("ava",uri.toString());
+//                                    firebaseFirestore.collection("Users").document(email)
+//                                            .set(userMap)
+//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                    Toast.makeText(SetupFirstActivity.this, "good :v", Toast.LENGTH_SHORT).show();
+//                                    Intent mainIntent=new Intent(SetupFirstActivity.this,MainActivity.class);
+//                                    startActivity(mainIntent);
+//                                    finish();
+//                                                }
+//                                            });
                                 }
                             });
                         }

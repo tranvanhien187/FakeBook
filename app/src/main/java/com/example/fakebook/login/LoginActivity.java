@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.fakebook.LoginFragment;
 import com.example.fakebook.MainActivity;
@@ -16,7 +17,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        try {
+            setContentView(R.layout.activity_login);
+        } catch (Exception e) {
+            Log.d("AAA",e.getMessage());
+            throw e;
+        }
+
     }
 
     @Override

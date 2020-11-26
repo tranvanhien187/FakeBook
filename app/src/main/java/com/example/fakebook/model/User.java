@@ -4,23 +4,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class User {
+    private String avatar;
     private String name;
-    private String uId;
+    private String email;
     private String dateOfBirth;
     private Boolean isMale;
     private ArrayList<Notification> notificationList;
-    private ArrayList<User> friendList;
+    private ArrayList<String> friendList;
     private ArrayList<FriendRequests> friendRequestList;          // uId
     private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
 
     public User() {
     }
 
-    public User(String name, String uId, String dateOfBirth, Boolean isMale) {
+    public User(String avatar, String name, String email, String dateOfBirth, Boolean isMale) {
+        this.avatar = avatar;
         this.name = name;
-        this.uId = uId;
+        this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.isMale = isMale;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getName() {
@@ -31,12 +41,12 @@ public class User {
         this.name = name;
     }
 
-    public String getuId() {
-        return uId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setuId(String uId) {
-        this.uId = uId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDateOfBirth() {
@@ -63,11 +73,11 @@ public class User {
         this.notificationList = notificationList;
     }
 
-    public ArrayList<User> getFriendList() {
+    public ArrayList<String> getFriendList() {
         return friendList;
     }
 
-    public void setFriendList(ArrayList<User> friendList) {
+    public void setFriendList(ArrayList<String> friendList) {
         this.friendList = friendList;
     }
 
