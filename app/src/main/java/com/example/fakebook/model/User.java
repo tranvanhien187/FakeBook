@@ -10,26 +10,37 @@ public class User {
     private String avatar;
     private FirebaseAuth firebaseAuth;
     private String name;
-    private String uId;
+    private String email;
     private String dateOfBirth;
     private Boolean isMale;
+
     private ArrayList<Notification> notificationList=new ArrayList<>();
-    private List<String> friendList=new ArrayList<String>();
     private ArrayList<FriendRequests> friendRequestList=new ArrayList<>();          // uId
+
+    private ArrayList<String> friendList;
     private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
     public User() {
     }
 
-    public User(String avatar,String name, String uId, String dateOfBirth, Boolean isMale) {
-        this.avatar=avatar;
+
+    public User(String avatar, String name, String email, String dateOfBirth, Boolean isMale) {
+        this.avatar = avatar;
         this.name = name;
-        this.uId = uId;
+        this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.isMale = isMale;
         firebaseAuth=FirebaseAuth.getInstance();
         String email=firebaseAuth.getCurrentUser().getEmail();
         email=email.substring(0,email.length()-"@gmail.com".length());
         this.friendList.add(email);
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getAvatar() {
@@ -48,12 +59,12 @@ public class User {
         this.name = name;
     }
 
-    public String getuId() {
-        return uId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setuId(String uId) {
-        this.uId = uId;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDateOfBirth() {
@@ -79,8 +90,7 @@ public class User {
     public void setNotificationList(ArrayList<Notification> notificationList) {
         this.notificationList = notificationList;
     }
-
-    public List<String> getFriendList() {
+    public ArrayList<String> getFriendList() {
         return friendList;
     }
 
