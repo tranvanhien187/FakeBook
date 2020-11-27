@@ -86,6 +86,11 @@ public class SetupFirstActivity extends AppCompatActivity {
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
+
+//                                     User cur=new User(uri.toString(),nickName,mAuth.getUid(),ngay+"/"+thang+"/"+nam,isMale);
+//                                     firebaseFirestore.collection("Users").document(email)
+//                                             .set(cur)
+
                                     User user=new User(uri.toString(),nickName,email,ngay+"/"+thang+"/"+nam,isMale);
                                     FirebaseFirestore DB = FirebaseFirestore.getInstance();
                                     DB.collection("Users")
@@ -107,6 +112,10 @@ public class SetupFirstActivity extends AppCompatActivity {
                                     Intent mainIntent=new Intent(SetupFirstActivity.this,MainActivity.class);
                                     startActivity(mainIntent);
                                     finish();
+                                                }
+                                            });
+
+ 
                                 }
                             });
                         }

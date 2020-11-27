@@ -1,21 +1,27 @@
 package com.example.fakebook.model;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class User {
     private String avatar;
+    private FirebaseAuth firebaseAuth;
     private String name;
     private String email;
     private String dateOfBirth;
     private Boolean isMale;
-    private ArrayList<Notification> notificationList;
-    private ArrayList<String> friendList;
-    private ArrayList<FriendRequests> friendRequestList;          // uId
-    private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
 
+    private ArrayList<Notification> notificationList=new ArrayList<>();
+    private ArrayList<FriendRequests> friendRequestList=new ArrayList<>();          // uId
+
+    private ArrayList<String> friendList;
+    private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
     public User() {
     }
+
 
     public User(String avatar, String name, String email, String dateOfBirth, Boolean isMale) {
         this.avatar = avatar;
@@ -23,6 +29,18 @@ public class User {
         this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.isMale = isMale;
+        firebaseAuth=FirebaseAuth.getInstance();
+        String email=firebaseAuth.getCurrentUser().getEmail();
+        email=email.substring(0,email.length()-"@gmail.com".length());
+        this.friendList.add(email);
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getAvatar() {
@@ -72,7 +90,6 @@ public class User {
     public void setNotificationList(ArrayList<Notification> notificationList) {
         this.notificationList = notificationList;
     }
-
     public ArrayList<String> getFriendList() {
         return friendList;
     }
@@ -83,6 +100,7 @@ public class User {
 
     public ArrayList<FriendRequests> getFriendRequestList() {
         return friendRequestList;
+        // lam ran doi ten di ms push dc
     }
 
     public void setFriendRequestList(ArrayList<FriendRequests> friendRequestList) {

@@ -53,6 +53,7 @@ public class PersonalityFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_personality,container,false);
+        // răng m ko clone vê vkl chư
     }
 
     @Override
