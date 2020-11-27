@@ -90,6 +90,7 @@ public class User {
 
     public ArrayList<FriendRequests> getFriendRequestList() {
         return friendRequestList;
+        // lam ran doi ten di ms push dc
     }
 
     public void setFriendRequestList(ArrayList<FriendRequests> friendRequestList) {
