@@ -1,26 +1,43 @@
 package com.example.fakebook.model;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class User {
+    private String avatar;
+    private FirebaseAuth firebaseAuth;
     private String name;
     private String uId;
     private String dateOfBirth;
     private Boolean isMale;
-    private ArrayList<Notification> notificationList;
-    private ArrayList<User> friendList;
-    private ArrayList<FriendRequests> friendRequestList;          // uId
+    private ArrayList<Notification> notificationList=new ArrayList<>();
+    private List<String> friendList=new ArrayList<String>();
+    private ArrayList<FriendRequests> friendRequestList=new ArrayList<>();          // uId
     private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
-
     public User() {
     }
 
-    public User(String name, String uId, String dateOfBirth, Boolean isMale) {
+    public User(String avatar,String name, String uId, String dateOfBirth, Boolean isMale) {
+        this.avatar=avatar;
         this.name = name;
         this.uId = uId;
         this.dateOfBirth = dateOfBirth;
         this.isMale = isMale;
+        firebaseAuth=FirebaseAuth.getInstance();
+        String email=firebaseAuth.getCurrentUser().getEmail();
+        email=email.substring(0,email.length()-"@gmail.com".length());
+        this.friendList.add(email);
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getName() {
@@ -63,11 +80,11 @@ public class User {
         this.notificationList = notificationList;
     }
 
-    public ArrayList<User> getFriendList() {
+    public List<String> getFriendList() {
         return friendList;
     }
 
-    public void setFriendList(ArrayList<User> friendList) {
+    public void setFriendList(ArrayList<String> friendList) {
         this.friendList = friendList;
     }
 

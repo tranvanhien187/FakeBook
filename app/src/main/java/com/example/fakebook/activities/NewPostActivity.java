@@ -106,7 +106,8 @@ public class NewPostActivity extends AppCompatActivity {
                                     postMap.put("text",text);
                                     postMap.put("liked",false);
                                     postMap.put("timestamp",FieldValue.serverTimestamp());
-                                    postMap.put("cnt",0);
+//                                    postMap.put("cnt",0);
+//                                    BlogPost postMap=new BlogPost(email,uri.toString(),text,FieldValue.serverTimestamp());
                                     final Map<String,Object> postMap2=new HashMap<>();
                                     postMap2.put("userId",email);
                                     postMap2.put("imageUrl",uri.toString());
@@ -124,10 +125,10 @@ public class NewPostActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                             if(task.isSuccessful()){
-
                                                                 final ArrayList<String> strings= (ArrayList<String>) task.getResult().get("friendList");
                                                                 cnt=0;
                                                                 for(String x:strings){
+                                                                    Toast.makeText(NewPostActivity.this,"friend : "+x, Toast.LENGTH_SHORT).show();
                                                                     firebaseFirestore.collection("Users").document(x)
                                                                             .collection("friendPosts").add(postMap2)
                                                                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

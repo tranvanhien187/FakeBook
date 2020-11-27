@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.fakebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -86,17 +87,18 @@ public class SetupFirstActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     Toast.makeText(SetupFirstActivity.this, "put image success !", Toast.LENGTH_SHORT).show();
-                                    Map<String,Object> userMap=new HashMap<>();
-                                    List friends=new ArrayList();
-                                    friends.add(email);
-                                    userMap.put("name",nickName);
-                                    userMap.put("isMale",isMale);
-                                    userMap.put("dateOfBirth",ngay+"/"+thang+"/"+nam);
-                                    userMap.put("uId",mAuth.getUid());
-                                    userMap.put("ava",uri.toString());
-                                    userMap.put("friendList",friends);
+//                                    Map<String,Object> userMap=new HashMap<>();
+//                                    List friends=new ArrayList();
+//                                    friends.add(email);
+//                                    userMap.put("name",nickName);
+//                                    userMap.put("isMale",isMale);
+//                                    userMap.put("dateOfBirth",ngay+"/"+thang+"/"+nam);
+//                                    userMap.put("uId",mAuth.getUid());
+//                                    userMap.put("ava",uri.toString());
+//                                    userMap.put("friendList",friends);
+                                    User cur=new User(uri.toString(),nickName,mAuth.getUid(),ngay+"/"+thang+"/"+nam,isMale);
                                     firebaseFirestore.collection("Users").document(email)
-                                            .set(userMap)
+                                            .set(cur)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -106,6 +108,8 @@ public class SetupFirstActivity extends AppCompatActivity {
                                     finish();
                                                 }
                                             });
+
+                                    // đau tien phai commit code kieu nhu xac nhan ay
                                 }
                             });
                         }
