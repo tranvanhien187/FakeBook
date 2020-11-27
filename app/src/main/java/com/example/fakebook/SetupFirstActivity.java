@@ -110,6 +110,9 @@ public class SetupFirstActivity extends AppCompatActivity {
                                             });
 
                                     // đau tien phai commit code kieu nhu xac nhan ay
+                                    // commit xong thi púh len thoi ok
+                                    // m rảr cho chăc ăi :v dung merge
+                                    // bua t merge an lozz do thi m râr đi
                                 }
                             });
                         }

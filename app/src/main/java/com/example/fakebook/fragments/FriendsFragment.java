@@ -59,8 +59,8 @@ public class FriendsFragment extends Fragment {
         recyclerView=(RecyclerView) view.findViewById(R.id.friend_request_recycle_view);
         requestsArrayList=new ArrayList<>();
         adapter=new FriendRequestsAdapter(requestsArrayList,getContext());
-        DB.collection("user")
-                .document("Trần Văn Hiền")
+        DB.collection("Users")
+                .document("tri1")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override

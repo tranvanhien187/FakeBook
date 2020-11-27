@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,15 +47,20 @@ public class NotificationsFragment extends Fragment {
         recyclerView =(RecyclerView) view.findViewById(R.id.recycle_view);
         adapter=new NotificationAdapter(notifications,getContext());
         DB.collection("user")
-                .document("Trần Văn Hiền")
+                .document("tri1")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        User user=task.getResult().toObject(User.class);
-                        for(Notification x : user.getNotificationList()){
-                            notifications.add(x);
-                            adapter.notifyDataSetChanged();
+                        if(task.isSuccessful()){
+                            User user=task.getResult().toObject(User.class);
+                            for(Notification x : user.getNotificationList()){
+                                notifications.add(x);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                        else{
+                            Toast.makeText(getContext(), "error : "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
