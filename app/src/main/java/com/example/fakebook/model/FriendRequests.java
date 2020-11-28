@@ -1,43 +1,24 @@
 package com.example.fakebook.model;
 
 public class FriendRequests {
-    String name;
-    String uId;
-    int avatar;
+    String email;
     String time;
 
     public FriendRequests() {
     }
 
-    public FriendRequests(String name, String uId, int avatar, String time) {
-        this.name = name;
-        this.uId = uId;
-        this.avatar = avatar;
+    public FriendRequests(String email, String time) {
+        this.email = email;
         this.time = time;
     }
 
-    public String getName() {
-        return name;
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
-    }
-
-    public int getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(int avatar) {
-        this.avatar = avatar;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getTime() {

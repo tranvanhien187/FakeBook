@@ -7,11 +7,30 @@
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
+        android:layout_centerHorizontal="true"
         android:background="@color/colorAccent"
         android:id="@+id/new_post_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/main_menu"/>
+        app:menu="@menu/main_menu">
+        <TextView
+            android:layout_margin="15dp"
+            android:textSize="23sp"
+            android:text="FakeBook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:textSize="25sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/edtSearch"
+                android:background="#fff" />
+        </androidx.cardview.widget.CardView>
+    </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:layout_below="@id/new_post_toolbar"

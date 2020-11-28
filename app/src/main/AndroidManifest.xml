@@ -13,6 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.ProfileUser"></activity>
+        <activity android:name=".ListSearchActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".activities.NewPostActivity" />
         <activity android:name=".login.LoginActivity">
@@ -25,7 +27,7 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".SetupFirstActivity"/>
+        <activity android:name=".SetupFirstActivity" />
     </application>
 
 </manifest>

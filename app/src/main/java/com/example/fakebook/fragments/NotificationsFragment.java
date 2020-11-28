@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.fakebook.R;
 
 
+import com.example.fakebook.adapters.FriendRequestsAdapter;
 import com.example.fakebook.adapters.NotificationAdapter;
 import com.example.fakebook.model.Notification;
 import com.example.fakebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -32,7 +34,8 @@ public class NotificationsFragment extends Fragment {
     RecyclerView recyclerView;
     NotificationAdapter adapter;
     ArrayList<Notification> notifications;
-    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,17 +48,19 @@ public class NotificationsFragment extends Fragment {
         notifications=new ArrayList<>();
         recyclerView =(RecyclerView) view.findViewById(R.id.recycle_view);
         adapter=new NotificationAdapter(notifications,getContext());
-        DB.collection("user")
-                .document("Trần Văn Hiền")
+
+        String emailTmp=mAuth.getCurrentUser().getEmail();
+        final String email=emailTmp.substring(0,emailTmp.length()-"@gmail.com".length());
+        firebaseFirestore.collection("Users")
+                .document(email)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         User user=task.getResult().toObject(User.class);
-                        for(Notification x : user.getNotificationList()){
-                            notifications.add(x);
-                            adapter.notifyDataSetChanged();
-                        }
+                        adapter=new NotificationAdapter(user.getNotificationList(),getContext());
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        recyclerView.setAdapter(adapter);
                     }
                 });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

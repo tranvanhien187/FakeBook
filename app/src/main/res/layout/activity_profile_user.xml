@@ -12,21 +12,50 @@
         android:layout_height="wrap_content">
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_centerInParent="true"
-            android:id="@+id/img_avatar_personality"
+            android:id="@+id/img_avatar_profile_user"
             android:src="@drawable/ic_game"
             android:layout_width="match_parent"
             android:layout_height="150dp"/>
         <TextView
-            android:id="@+id/txt_name_personality"
+            android:id="@+id/txt_name_profile_user"
             android:gravity="center"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:text="Trần Văn Hiền"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:gravity="center"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_weight="0.8"
+                android:textAllCaps="false"
+                android:id="@+id/btn_add_friend_profile_user"
+                android:layout_marginTop="5dp"
+                android:textColor="#FFF"
+                android:text="Thêm bạn bè"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_add_friend"/>
+            <Button
+                android:visibility="gone"
+                android:layout_weight="0.8"
+                android:textAllCaps="false"
+                android:id="@+id/btn_cancel_add_friend_profile_user"
+                android:layout_marginTop="5dp"
+                android:textColor="#FFF"
+                android:text="Đã gửi lời mời kết bạn"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_add_friend"/>
+        </LinearLayout>
         <TextView
             android:layout_marginTop="5dp"
-            android:id="@+id/txt_date_of_birth_personality"
+            android:id="@+id/txt_date_of_birth_profile_user"
             android:drawableStart="@drawable/ic_date"
             android:textColor="@color/black"
             android:gravity="center_vertical"
@@ -36,7 +65,7 @@
             android:layout_height="wrap_content"/>
         <TextView
             android:layout_marginTop="5dp"
-            android:id="@+id/txt_email_personality"
+            android:id="@+id/txt_email_profile_user"
             android:drawableStart="@drawable/ic_email"
             android:textColor="@color/black"
             android:gravity="center_vertical"
@@ -46,7 +75,7 @@
             android:layout_height="wrap_content"/>
         <TextView
             android:layout_marginTop="5dp"
-            android:id="@+id/txt_sex_personality"
+            android:id="@+id/txt_sex_profile_user"
             android:drawableStart="@drawable/ic_sex"
             android:textColor="@color/black"
             android:gravity="center_vertical"
@@ -61,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycle_view_friend"
+            android:id="@+id/recycle_view_friend_profile_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <androidx.recyclerview.widget.RecyclerView

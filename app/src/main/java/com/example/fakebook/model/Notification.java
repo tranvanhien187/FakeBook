@@ -1,25 +1,25 @@
 package com.example.fakebook.model;
 
 public class Notification {
+    String email;
     String content;
     String time;
-    int avatar;
 
     public Notification() {
     }
 
-    public Notification(String content, String time, int avatar) {
+    public Notification(String email, String content, String time) {
+        this.email = email;
         this.content = content;
         this.time = time;
-        this.avatar = avatar;
     }
 
-    public String getContent() {
-        return content;
+    public String getEmail() {
+        return email;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getTime() {
@@ -30,12 +30,12 @@ public class Notification {
         this.time = time;
     }
 
-    public int getAvatar() {
-        return avatar;
+    public String getContent() {
+        return content;
     }
 
-    public void setAvatar(int avatar) {
-        this.avatar = avatar;
+    public void setContent(String content) {
+        this.content = content;
     }
 }
 

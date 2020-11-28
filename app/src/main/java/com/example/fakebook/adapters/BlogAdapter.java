@@ -67,7 +67,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
                         if(task.isSuccessful()){
                             String userName=task.getResult().getString("name");
                             holder.setName(userName);
-                            String image=task.getResult().getString("ava");
+                            String image=task.getResult().getString("avatar");
                             holder.setAva(image);
                         }
                         else{

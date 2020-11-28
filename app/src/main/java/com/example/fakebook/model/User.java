@@ -1,7 +1,10 @@
 package com.example.fakebook.model;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class User {
     private String avatar;
@@ -9,16 +12,23 @@ public class User {
     private String email;
     private String dateOfBirth;
     private Boolean isMale;
-    private ArrayList<Notification> notificationList;
-    private ArrayList<String> friendList;
-    private ArrayList<FriendRequests> friendRequestList;          // uId
+    private ArrayList<Notification> notificationList=new ArrayList<>();
+    private List<String> friendList=new ArrayList<String>();
+    private ArrayList<FriendRequests> friendRequestList=new ArrayList<>();          // uId
     private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
-
     public User() {
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public User(String avatar, String name, String email, String dateOfBirth, Boolean isMale) {
-        this.avatar = avatar;
+        this.avatar=avatar;
         this.name = name;
         this.email = email;
         this.dateOfBirth = dateOfBirth;
@@ -41,13 +51,6 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getDateOfBirth() {
         return dateOfBirth;
@@ -73,7 +76,7 @@ public class User {
         this.notificationList = notificationList;
     }
 
-    public ArrayList<String> getFriendList() {
+    public List<String> getFriendList() {
         return friendList;
     }
 
@@ -83,6 +86,7 @@ public class User {
 
     public ArrayList<FriendRequests> getFriendRequestList() {
         return friendRequestList;
+        // lam ran doi ten di ms push dc
     }
 
     public void setFriendRequestList(ArrayList<FriendRequests> friendRequestList) {

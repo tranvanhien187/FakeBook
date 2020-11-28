@@ -86,27 +86,33 @@ public class SetupFirstActivity extends AppCompatActivity {
                             taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    User user=new User(uri.toString(),nickName,email,ngay+"/"+thang+"/"+nam,isMale);
-                                    FirebaseFirestore DB = FirebaseFirestore.getInstance();
-                                    DB.collection("Users")
-                                            .document(email)
-                                            .set(user)
+                                    Toast.makeText(SetupFirstActivity.this, "put image success !", Toast.LENGTH_SHORT).show();
+//                                    Map<String,Object> userMap=new HashMap<>();
+//                                    List friends=new ArrayList();
+//                                    friends.add(email);
+//                                    userMap.put("name",nickName);
+//                                    userMap.put("isMale",isMale);
+//                                    userMap.put("dateOfBirth",ngay+"/"+thang+"/"+nam);
+//                                    userMap.put("uId",mAuth.getUid());
+//                                    userMap.put("ava",uri.toString());
+//                                    userMap.put("friendList",friends);
+                                    User cur=new User(uri.toString(),nickName,email,ngay+"/"+thang+"/"+nam,isMale);
+                                    firebaseFirestore.collection("Users").document(email)
+                                            .set(cur)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    Toast.makeText(SetupFirstActivity.this, "DarkNight", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                    DB.collection("Users").document(email)
-                                            .update("friendList",new ArrayList<String>()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            Toast.makeText(SetupFirstActivity.this,"Success", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                                    Toast.makeText(SetupFirstActivity.this, "good :v", Toast.LENGTH_SHORT).show();
                                     Intent mainIntent=new Intent(SetupFirstActivity.this,MainActivity.class);
                                     startActivity(mainIntent);
                                     finish();
+                                                }
+                                            });
+
+                                    // đau tien phai commit code kieu nhu xac nhan ay
+                                    // commit xong thi púh len thoi ok
+                                    // m rảr cho chăc ăi :v dung merge
+                                    // bua t merge an lozz do thi m râr đi
                                 }
                             });
                         }

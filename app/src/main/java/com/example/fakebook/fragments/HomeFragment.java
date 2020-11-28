@@ -218,7 +218,6 @@ public class HomeFragment extends Fragment {
                 next.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        Toast.makeText(getContext(), "lastVisible : "+lastVisible.toObject(BlogPost.class).getUserId(), Toast.LENGTH_SHORT).show();
                         for(DocumentChange doc:value.getDocumentChanges()){
                             if(doc.getType()==DocumentChange.Type.ADDED){
                                 blogID.add(doc.getDocument().getId());

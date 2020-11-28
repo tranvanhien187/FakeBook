@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.SuccessContinuation;
 import com.google.android.gms.tasks.Task;
 
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -42,8 +43,8 @@ public class FriendsFragment extends Fragment {
     FriendRequestsAdapter adapter;
     RecyclerView recyclerView;
     private boolean mIsLoading;
-    FirebaseFirestore DB = FirebaseFirestore.getInstance();
-
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth=FirebaseAuth.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,26 +59,22 @@ public class FriendsFragment extends Fragment {
 
         recyclerView=(RecyclerView) view.findViewById(R.id.friend_request_recycle_view);
         requestsArrayList=new ArrayList<>();
-        adapter=new FriendRequestsAdapter(requestsArrayList,getContext());
-        DB.collection("user")
-                .document("Trần Văn Hiền")
+
+
+        String emailTmp=mAuth.getCurrentUser().getEmail();
+        final String email=emailTmp.substring(0,emailTmp.length()-"@gmail.com".length());
+        firebaseFirestore.collection("Users")
+                .document(email)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         User user=task.getResult().toObject(User.class);
-                        for(FriendRequests x : user.getFriendRequestList()){
-                            requestsArrayList.add(x);
-                            adapter.notifyDataSetChanged();
+                        adapter=new FriendRequestsAdapter(user.getFriendRequestList(),getContext());
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        recyclerView.setAdapter(adapter);
                         }
-                    }
-                });
-
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-
-
+                    });
     }
 
     public void loadDataWhenScroll() {

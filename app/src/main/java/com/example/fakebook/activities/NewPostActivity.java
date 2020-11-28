@@ -118,34 +118,71 @@ public class NewPostActivity extends AppCompatActivity {
                                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                 @Override
                                                 public void onSuccess(DocumentReference documentReference) {
-                                                    Toast.makeText(NewPostActivity.this, "added", Toast.LENGTH_SHORT).show();
                                                     firebaseFirestore.collection("Users").document(email)
-                                                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                            .collection("friendPosts")
+                                                            .add(postMap2).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                         @Override
-                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        public void onComplete(@NonNull Task<DocumentReference> task) {
                                                             if(task.isSuccessful()){
+                                                                Toast.makeText(NewPostActivity.this, "added", Toast.LENGTH_SHORT).show();
+                                                                firebaseFirestore.collection("Users").document(email)
+                                                                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                        if(task.isSuccessful()){
 
-                                                                final ArrayList<String> strings= (ArrayList<String>) task.getResult().get("friendList");
-                                                                cnt=0;
-                                                                for(String x:strings){
-                                                                    firebaseFirestore.collection("Users").document(x)
-                                                                            .collection("friendPosts").add(postMap2)
-                                                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                                @Override
-                                                                                public void onSuccess(DocumentReference documentReference) {
-                                                                                    ++cnt;
-                                                                                    if(cnt==strings.size()){
-                                                                                        Intent mainIntent=new Intent(NewPostActivity.this,MainActivity.class);
-                                                                                        startActivity(mainIntent);
-                                                                                        finish();
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                }
+                                                                            final ArrayList<String> strings= (ArrayList<String>) task.getResult().get("friendList");
+                                                                            cnt=0;
+                                                                            for(String x:strings){
+                                                                                firebaseFirestore.collection("Users").document(x)
+                                                                                        .collection("friendPosts").add(postMap2)
+                                                                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                                            @Override
+                                                                                            public void onSuccess(DocumentReference documentReference) {
+                                                                                                ++cnt;
+                                                                                                if(cnt==strings.size()){
+                                                                                                    Intent mainIntent=new Intent(NewPostActivity.this,MainActivity.class);
+                                                                                                    startActivity(mainIntent);
+                                                                                                    finish();
+                                                                                                }
+                                                                                            }
+                                                                                        });
+                                                                            }
 
+                                                                        }
+                                                                    }
+                                                                });
                                                             }
                                                         }
                                                     });
+//                                                    Toast.makeText(NewPostActivity.this, "added", Toast.LENGTH_SHORT).show();
+//                                                    firebaseFirestore.collection("Users").document(email)
+//                                                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                                            if(task.isSuccessful()){
+//
+//                                                                final ArrayList<String> strings= (ArrayList<String>) task.getResult().get("friendList");
+//                                                                cnt=0;
+//                                                                for(String x:strings){
+//                                                                    firebaseFirestore.collection("Users").document(x)
+//                                                                            .collection("friendPosts").add(postMap2)
+//                                                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                                                                                @Override
+//                                                                                public void onSuccess(DocumentReference documentReference) {
+//                                                                                    ++cnt;
+//                                                                                    if(cnt==strings.size()){
+//                                                                                        Intent mainIntent=new Intent(NewPostActivity.this,MainActivity.class);
+//                                                                                        startActivity(mainIntent);
+//                                                                                        finish();
+//                                                                                    }
+//                                                                                }
+//                                                                            });
+//                                                                }
+//
+//                                                            }
+//                                                        }
+//                                                    });
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
