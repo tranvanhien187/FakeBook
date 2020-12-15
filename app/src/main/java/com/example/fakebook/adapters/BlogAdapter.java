@@ -1,30 +1,45 @@
 package com.example.fakebook.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.fakebook.R;
 import com.example.fakebook.model.BlogPost;
+import com.example.fakebook.model.Comment;
+import com.example.fakebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -52,12 +67,29 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        holder.setIsRecyclable(false);
+        firebaseFirestore.collection("Comments").document(blogList.get(position).getNamename())
+                .collection("cmts")
+                .orderBy("time", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        for(DocumentChange doc:value.getDocumentChanges()){
+                            if(doc.getType()==DocumentChange.Type.ADDED){
+                                Comment comment=doc.getDocument().toObject(Comment.class);
+                                holder.comments.add(0,comment);
+                                holder.adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                });
+
         String text=blogList.get(position).getText();
         holder.setText(text);
         String downloadUrl=blogList.get(position).getImageUrl();
         holder.setBlogImage(downloadUrl);
         String userId=blogList.get(position).getUserId();
-        FirebaseAuth mAuth=FirebaseAuth.getInstance();
+        final FirebaseAuth mAuth=FirebaseAuth.getInstance();
 //        String emailTmp=userId;
         final String email=userId;
         firebaseFirestore.collection("Users").document(email).get()
@@ -119,6 +151,45 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
                 }
             }
         });
+        holder.btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String cmt=holder.edtCmt.getText().toString().trim();
+                if(!TextUtils.isEmpty(cmt)){
+                    cmt="";
+
+                    String myEmail=mAuth.getCurrentUser().getEmail();
+                    myEmail=mEmail.substring(0,myEmail.length()-"@gmail.com".length());
+                    firebaseFirestore.collection("Users").document(myEmail)
+                            .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    User me=value.toObject(User.class);
+                                    Comment now=new Comment(me.getEmail(),me.getName(),me.getAvatar(),holder.edtCmt.getText().toString(), Calendar.getInstance().getTime());
+//                                    Toast.makeText(context,me.getName(), Toast.LENGTH_SHORT).show();
+                                    firebaseFirestore.collection("Comments")
+                                            .document(blogList.get(position).getNamename())
+                                            .collection("cmts")
+                                            .add(now)
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
+                                                    holder.edtCmt.setText("");
+                                                    Toast.makeText(context, "Đã gửi bình luận ", Toast.LENGTH_SHORT).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(context, "error : "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            });
+//
+                }
+            }
+        });
     }
 
     @Override
@@ -135,11 +206,21 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.ViewHolder> {
         private CircleImageView imgAva;
         private ImageView btnBlogLike;
         private TextView tvLikeCnt;
+        private EditText edtCmt;
+        private ImageView btnSend;
+        private RecyclerView rvCmts;
+        private CommentAdapter adapter;
+        private List<Comment> comments=new ArrayList<>();
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView=itemView;
             btnBlogLike=mView.findViewById(R.id.btn_like);
-
+            edtCmt=mView.findViewById(R.id.edt_cmt);
+            btnSend=mView.findViewById(R.id.btn_send);
+            rvCmts=mView.findViewById(R.id.rv_cmts);
+            rvCmts.setLayoutManager(new LinearLayoutManager(context));
+            adapter=new CommentAdapter(comments,context);
+            rvCmts.setAdapter(adapter);
         }
         public void setText(String text){
             tvText=mView.findViewById(R.id.blog_test);

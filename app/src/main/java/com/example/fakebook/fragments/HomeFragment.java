@@ -20,10 +20,7 @@ import com.example.fakebook.R;
 import com.example.fakebook.activities.NewPostActivity;
 import com.example.fakebook.adapters.BlogAdapter;
 import com.example.fakebook.model.BlogPost;
-import com.example.fakebook.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
@@ -32,15 +29,10 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
 
 public class HomeFragment extends Fragment {
     private FloatingActionButton fabAdd;
@@ -153,8 +145,6 @@ public class HomeFragment extends Fragment {
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(v.getContext(), "Go to post news !!", Toast.LENGTH_SHORT).show();
-                // do something
                 Intent postIntent=new Intent(v.getContext(), NewPostActivity.class);
                 v.getContext().startActivity(postIntent);
             }
@@ -201,7 +191,6 @@ public class HomeFragment extends Fragment {
                 });
     }
     public void LazyLoad(final String email){
-        Toast.makeText(getContext(), "something", Toast.LENGTH_SHORT).show();
         firebaseFirestore.collection("Users").document(email)
                 .collection("friendPosts")
                 .orderBy("timestamp",Query.Direction.DESCENDING)

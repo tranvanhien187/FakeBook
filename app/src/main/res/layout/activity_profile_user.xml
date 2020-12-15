@@ -1,25 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/black">
     <LinearLayout
+        android:background="@color/black"
         android:layout_marginTop="5dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_centerInParent="true"
-            android:id="@+id/img_avatar_profile_user"
-            android:src="@drawable/ic_game"
+        <LinearLayout
+            android:weightSum="5"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="150dp"/>
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_weight="2.5"
+                android:layout_centerInParent="true"
+                android:id="@+id/img_avatar_profile_user"
+                android:src="@drawable/ic_game"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"/>
+            <LinearLayout
+                android:weightSum="3"
+                android:orientation="vertical"
+                android:layout_weight="2.5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:drawablePadding="10dp"
+                    android:id="@+id/txt_email_profile_user"
+                    android:drawableStart="@drawable/ic_email"
+                    android:textColor="@color/white"
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:text="Trần Văn Hiền"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:drawablePadding="10dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/txt_sex_profile_user"
+                    android:drawableStart="@drawable/ic_sex"
+                    android:textColor="@color/white"
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:text="Trần Văn Hiền"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:drawablePadding="10dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/txt_date_of_birth_profile_user"
+                    android:drawableStart="@drawable/ic_date"
+                    android:textColor="@color/white"
+                    android:gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:text="Trần Văn Hiền"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/txt_name_profile_user"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:text="Trần Văn Hiền"
             android:layout_width="match_parent"
@@ -52,51 +104,57 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_button_add_friend"/>
+            <Button
+                android:visibility="gone"
+                android:layout_weight="0.8"
+                android:textAllCaps="false"
+                android:id="@+id/btn_friend_profile_user"
+                android:layout_marginTop="5dp"
+                android:textColor="#FFF"
+                android:text="Bạn bè"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_add_friend"/>
         </LinearLayout>
-        <TextView
-            android:layout_marginTop="5dp"
-            android:id="@+id/txt_date_of_birth_profile_user"
-            android:drawableStart="@drawable/ic_date"
-            android:textColor="@color/black"
-            android:gravity="center_vertical"
-            android:textSize="14sp"
-            android:text="Trần Văn Hiền"
+        <ImageView
+            android:src="@drawable/dash"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="5dp"/>
         <TextView
-            android:layout_marginTop="5dp"
-            android:id="@+id/txt_email_profile_user"
-            android:drawableStart="@drawable/ic_email"
-            android:textColor="@color/black"
-            android:gravity="center_vertical"
-            android:textSize="14sp"
-            android:text="Trần Văn Hiền"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:layout_marginTop="5dp"
-            android:id="@+id/txt_sex_profile_user"
-            android:drawableStart="@drawable/ic_sex"
-            android:textColor="@color/black"
-            android:gravity="center_vertical"
-            android:textSize="14sp"
-            android:text="Trần Văn Hiền"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:textColor="@color/black"
+            android:layout_marginStart="20dp"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:text="Bạn bè"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <ImageView
+            android:src="@drawable/dash"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycle_view_friend_profile_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <ImageView
+            android:src="@drawable/dash"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+        <TextView
+            android:layout_marginStart="20dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="Bài viết gần đây"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:src="@drawable/dash"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycle_view_my_post"
+            android:id="@+id/recycle_view_my_post_profile_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

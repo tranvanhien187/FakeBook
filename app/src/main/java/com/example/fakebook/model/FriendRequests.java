@@ -1,13 +1,15 @@
 package com.example.fakebook.model;
 
+import java.util.Date;
+
 public class FriendRequests {
     String email;
-    String time;
+    Date time;
 
     public FriendRequests() {
     }
 
-    public FriendRequests(String email, String time) {
+    public FriendRequests(String email, Date time) {
         this.email = email;
         this.time = time;
     }
@@ -21,11 +23,11 @@ public class FriendRequests {
         this.email = email;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 }

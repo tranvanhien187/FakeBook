@@ -5,11 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -80,18 +78,23 @@ public class MainActivity extends AppCompatActivity {
             Fragment selectedFragment=null;
             switch (menuItem.getItemId()){
                 case R.id.nav_home:
+                    toolbar.setVisibility(View.VISIBLE);
                     selectedFragment=new HomeFragment();
                     break;
                 case R.id.nav_friend_request:
+                    toolbar.setVisibility(View.VISIBLE);
                     selectedFragment=new FriendsFragment();
                     break;
                 case R.id.nav_personality:
+                    toolbar.setVisibility(View.GONE);
                     selectedFragment=new PersonalityFragment();
                     break;
                 case R.id.nav_notification:
+                    toolbar.setVisibility(View.VISIBLE);
                     selectedFragment=new NotificationsFragment();
                     break;
                 case R.id.nav_game:
+                    toolbar.setVisibility(View.VISIBLE);
                     selectedFragment=new GamesFragment();
                     break;
 

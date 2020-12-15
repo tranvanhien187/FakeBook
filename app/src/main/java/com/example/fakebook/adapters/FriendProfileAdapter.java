@@ -1,6 +1,8 @@
 package com.example.fakebook.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fakebook.R;
+import com.example.fakebook.activities.ProfileUser;
 import com.example.fakebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -84,6 +87,14 @@ public class FriendProfileAdapter extends RecyclerView.Adapter<FriendProfileAdap
                             });
                         }
                     });
+            imgAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent profileIntent = new Intent(context, ProfileUser.class);
+                    profileIntent.putExtra("email",email);
+                    context.startActivity(profileIntent);
+                }
+            });
         }
     }
 }

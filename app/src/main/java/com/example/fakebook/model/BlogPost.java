@@ -5,16 +5,25 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class BlogPost {
-    public String userId,imageUrl,text;
+    public String userId,imageUrl,text,namename;
     public Date timestamp;
     public boolean liked=false;
     public BlogPost(){}
 
-    public BlogPost(String userId, String imageUrl, String text, Date timestamp) {
+    public BlogPost(String userId, String imageUrl, String text, Date timestamp,String namename) {
         this.userId = userId;
         this.imageUrl = imageUrl;
         this.text = text;
         this.timestamp=timestamp;
+        this.namename=namename;
+    }
+
+    public String getNamename() {
+        return namename;
+    }
+
+    public void setNamename(String namename) {
+        this.namename = namename;
     }
 
     public boolean isLiked() {

@@ -1,14 +1,16 @@
 package com.example.fakebook.model;
 
+import java.util.Date;
+
 public class Notification {
     String email;
     String content;
-    String time;
+    Date time;
 
     public Notification() {
     }
 
-    public Notification(String email, String content, String time) {
+    public Notification(String email, String content, Date time) {
         this.email = email;
         this.content = content;
         this.time = time;
@@ -22,11 +24,11 @@ public class Notification {
         this.email = email;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 

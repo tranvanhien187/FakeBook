@@ -12,9 +12,11 @@ public class User {
     private String email;
     private String dateOfBirth;
     private Boolean isMale;
+    private String lowercaseName;
     private ArrayList<Notification> notificationList=new ArrayList<>();
-    private List<String> friendList=new ArrayList<String>();
+    private ArrayList<String> friendList=new ArrayList<>();
     private ArrayList<FriendRequests> friendRequestList=new ArrayList<>();          // uId
+    private ArrayList<String> requestList=new ArrayList<>();
     private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
     public User() {
     }
@@ -33,6 +35,15 @@ public class User {
         this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.isMale = isMale;
+        this.lowercaseName=name.toLowerCase();
+    }
+
+    public String getLowercaseName() {
+        return lowercaseName;
+    }
+
+    public void setLowercaseName(String lowercaseName) {
+        this.lowercaseName = lowercaseName;
     }
 
     public String getAvatar() {
@@ -76,7 +87,7 @@ public class User {
         this.notificationList = notificationList;
     }
 
-    public List<String> getFriendList() {
+    public ArrayList<String> getFriendList() {
         return friendList;
     }
 
@@ -99,5 +110,13 @@ public class User {
 
     public void setSentimentalRatings(HashMap<String, Integer> sentimentalRatings) {
         this.sentimentalRatings = sentimentalRatings;
+    }
+
+    public ArrayList<String> getRequestList() {
+        return requestList;
+    }
+
+    public void setRequestList(ArrayList<String> requestList) {
+        this.requestList = requestList;
     }
 }

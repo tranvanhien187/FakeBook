@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/icon_nai"
+        android:duration="100" />
+    <item
+        android:drawable="@drawable/icon_bau"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/icon_ga"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/icon_ca"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/icon_cua"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/icon_tom"
+        android:duration="100"/>
+</animation-list>

@@ -70,7 +70,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tvTime = (TextView) view.findViewById(R.id.tv_row_notification_time);
             imgAvatar = (CircleImageView) view.findViewById(R.id.img_row_notification_avatar);
             //tvContent.setText(notification.getContent());
-            tvTime.setText(notification.getTime());
+            tvTime.setText(notification.getTime().toString());
             //imgAvatar.setImageResource(notification.getAvatar());
             firebaseFirestore.collection("Users").document(notification.getEmail())
                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

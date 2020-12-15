@@ -6,10 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fakebook.R;
-import com.example.fakebook.activities.ProfileUser;
 import com.example.fakebook.model.BlogPost;
 import com.example.fakebook.model.FriendRequests;
 import com.example.fakebook.model.Notification;
@@ -37,22 +34,23 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.concurrent.ScheduledExecutorService;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAdapter.ViewHolder> {
 
-    ArrayList<FriendRequests> friendRequestsArrayList;
+    ArrayList<FriendRequests> friendRequestsListCurrent;
     Context context;
-    private FirebaseFirestore firebaseFirestore;
-    private FirebaseAuth firebaseAuth;
 
-    public FriendRequestsAdapter(ArrayList<FriendRequests> friendRequestsArrayList, Context context) {
-        this.friendRequestsArrayList = friendRequestsArrayList;
+
+    public FriendRequestsAdapter(ArrayList<FriendRequests> friendRequestsListCurrent, Context context) {
+        this.friendRequestsListCurrent = friendRequestsListCurrent;
         this.context = context;
-        firebaseFirestore=FirebaseFirestore.getInstance();
-        firebaseAuth=FirebaseAuth.getInstance();
+
     }
 
     @NonNull
@@ -65,12 +63,12 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.binding(friendRequestsArrayList.get(position),position);
+        holder.binding(friendRequestsListCurrent.get(position),position);
     }
 
     @Override
     public int getItemCount() {
-        return friendRequestsArrayList.size();
+        return friendRequestsListCurrent.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -95,7 +93,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
             return now;
         }
 
-        public void binding(final FriendRequests friendRequest, final int position)
+        public void binding(final FriendRequests friendRequestCurrent, final int position)
         {
             imgAvatar=(CircleImageView) view.findViewById(R.id.img_row_avatar_request);
             tvName=(TextView) view.findViewById(R.id.tv_row_name_request);
@@ -107,9 +105,8 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
             linearLayout=(LinearLayout) view.findViewById(R.id.row_wait_accept_request);
 
 
-            tvTime.setText(friendRequest.getTime());
-            firebaseFirestore.collection("Users")
-                    .document(friendRequest.getEmail())
+            tvTime.setText(friendRequestCurrent.getTime().toString());
+            firebaseFirestore.collection("Users").document(friendRequestCurrent.getEmail())
                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -127,8 +124,8 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                 @Override
                 public void onClick(View view) {
                     // merge cur->friend
-                    String myEmail=firebaseAuth.getCurrentUser().getEmail();
-                    final String friendEmail=friendRequest.getEmail();
+                    String myEmail=mAuth.getCurrentUser().getEmail();
+                    final String friendEmail=friendRequestCurrent.getEmail();
                     Log.d("AAA",friendEmail);
                     myEmail=myEmail.substring(0,myEmail.length()-"@gmail.com".length());
                     final String finalFriendEmail = friendEmail;
@@ -165,7 +162,6 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                             .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//                                    List<BlogPost> list=new ArrayList<>();
                                     for(DocumentChange doc:value.getDocumentChanges()){
                                         if(doc.getType()==DocumentChange.Type.ADDED){
                                             BlogPost now=doc.getDocument().toObject(BlogPost.class);
@@ -187,20 +183,24 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                                     }
                                 }
                             });
+
+
                     linearLayout.setVisibility(View.GONE);
                     tvAcceptRequests.setVisibility(View.VISIBLE);
-                    firebaseFirestore.collection("Users")
-                            .document(emailCurUser)
+
+                    // xử lý ở người dùng hiện tại khi người dùng hiện tại nhấn đồng ý kết bạn
+                    firebaseFirestore.collection("Users").document(emailCurUser)
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            ArrayList<String> friends= (ArrayList<String>) task.getResult().get("friendList");
-                            friends.add(friendRequest.getEmail());
-                            firebaseFirestore.collection("Users")
-                                    .document(emailCurUser)
-                                    .update("friendList",friends);
 
-                            //add loi moi ket ban
+                            // thêm bạn bè vào danh sách người dùng hiện tại khi nhấn đồng ý kết bạn
+                            ArrayList<String> friendList= (ArrayList<String>) task.getResult().get("friendList");
+                            friendList.add(friendRequestCurrent.getEmail());
+                            firebaseFirestore.collection("Users").document(emailCurUser)
+                                    .update("friendList",friendList);
+
+                            // xoá lời mời kết bạn ở người dùng hiện tại khi nhấn đồng ý kết bạn
                             final ArrayList<FriendRequests> friendRequestsArrayListUpdate = (ArrayList<FriendRequests>) task.getResult().get("friendRequestList");
                             firebaseFirestore.collection("Users")
                                     .document(emailCurUser)
@@ -208,7 +208,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        friendRequestsArrayList.remove(position);
+                                        friendRequestsListCurrent.remove(position);
                                         notifyDataSetChanged();
                                         linearLayout.setVisibility(View.VISIBLE);
                                         tvAcceptRequests.setVisibility(View.GONE);
@@ -216,66 +216,34 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                                 }
                             });
 
-                            //add thong bao
-                            final ArrayList<Notification> notificationArrayList = (ArrayList<Notification>) task.getResult().get("notificationList");
-                            DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-                            dateFormatter.setLenient(false);
-                            Date today = new Date();
-                            String date = dateFormatter.format(today);
-                            notificationArrayList.add(new Notification(friendRequest.getEmail()," đã kết bạn với bạn",date));
+                            // thêm thông báo đã trở thành bạn bè ở người dùng hiên tại khi đồng ý kết bạn
+                            final ArrayList<Notification> notificationListUpdate = (ArrayList<Notification>) task.getResult().get("notificationList");
+                            notificationListUpdate.add(new Notification(friendRequestCurrent.getEmail()," đã kết bạn với bạn",Calendar.getInstance().getTime()));
                             firebaseFirestore.collection("Users").document(emailCurUser)
-                                    .update("notificationList",notificationArrayList).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    .update("notificationList",notificationListUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Log.d("AAA",notificationArrayList.size()+"  asdasd");
+
                                 }
                             });
                         }
                     });
-                    //add ban be o nguoi gui
-                    Log.d("AAA",friendRequest.getEmail()) ;
-                    firebaseFirestore.collection("Users")
-                            .document(friendRequest.getEmail())
+                    // xử lý ở người gửi lời mời kết bạn khi người dùng hiện tại nhấn đồng ý kết bạn
+                    firebaseFirestore.collection("Users").document(friendRequestCurrent.getEmail())
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            ArrayList<String> friendList= (ArrayList<String>) task.getResult().get("friendList");
-                            friendList.add(emailCurUser);
-                            firebaseFirestore.collection("Users")
-                                    .document(friendRequest.getEmail())
-                                    .update("friendList",friendList);
+                            //thêm bạn bè vào danh sách bạn bè của người gửi lời mời kết bạn khi nhấn đồng ý kết bạn
+                            ArrayList<String> friendListUpdate= (ArrayList<String>) task.getResult().get("friendList");
+                            friendListUpdate.add(emailCurUser);
+                            firebaseFirestore.collection("Users").document(friendRequestCurrent.getEmail())
+                                    .update("friendList",friendListUpdate);
 
-                            //add thong bao
-                            final ArrayList<Notification> notificationArrayList = (ArrayList<Notification>) task.getResult().get("notificationList");
-                            DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-                            dateFormatter.setLenient(false);
-                            Date today = new Date();
-                            String date = dateFormatter.format(today);
-                            Log.d("AAA",emailCurUser+"  ddssd");
-                            notificationArrayList.add(new Notification(emailCurUser," đã kết bạn với bạn",date));
-                            firebaseFirestore.collection("Users").document(friendRequest.getEmail())
-                                    .update("notificationList",notificationArrayList);
-                        }
-                    });
-                    //add ban be o nguoi gui ban
-                    firebaseFirestore.collection("Users")
-                            .document(emailCurUser)
-                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            Toast.makeText(context, "before : "+position, Toast.LENGTH_SHORT).show();
-                            final ArrayList<FriendRequests> friendRequestsArrayList = (ArrayList<FriendRequests>) task.getResult().get("friendRequestList");
-                            firebaseFirestore.collection("Users")
-                                    .document(emailCurUser)
-                                    .update("friendRequestList",newArray(friendRequestsArrayList,position)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        friendRequestsArrayList.remove(position);
-                                    }
-                                }
-                            });
-
+                            //thêm thông báo vào danh sách thông báo của người gửi lời mời kết bạn khi nhấn đồng ý kết bạn
+                            final ArrayList<Notification> notificationListUpdate = (ArrayList<Notification>) task.getResult().get("notificationList");
+                            notificationListUpdate.add(new Notification(emailCurUser," đã kết bạn với bạn", Calendar.getInstance().getTime()));
+                            firebaseFirestore.collection("Users").document(friendRequestCurrent.getEmail())
+                                    .update("notificationList",notificationListUpdate);
                         }
                     });
 
@@ -291,14 +259,14 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            final ArrayList<FriendRequests> friendRequestsArrayListUpdate = (ArrayList<FriendRequests>) task.getResult().get("friendRequestList");
+                            final ArrayList<FriendRequests> friendRequestsListUpdate = (ArrayList<FriendRequests>) task.getResult().get("friendRequestList");
                             firebaseFirestore.collection("Users")
                                     .document(emailCurUser)
-                                    .update("friendRequestList",newArray(friendRequestsArrayListUpdate,position)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    .update("friendRequestList",newArray(friendRequestsListUpdate,position)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        friendRequestsArrayList.remove(position);
+                                        friendRequestsListCurrent.remove(position);
                                         notifyDataSetChanged();
                                         linearLayout.setVisibility(View.VISIBLE);
                                         tvDeclineRequests.setVisibility(View.GONE);

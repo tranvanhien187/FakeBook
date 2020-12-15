@@ -34,12 +34,13 @@ public class ListSearchActivity extends AppCompatActivity {
         firebaseFirestore=FirebaseFirestore.getInstance();
         Intent intent=getIntent();
         String name=intent.getStringExtra("name");
+        name=name.toLowerCase();
         Toast.makeText(this, "name : "+name, Toast.LENGTH_SHORT).show();
         rv=findViewById(R.id.rv);
         adapter=new UserApdater(mainList);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
-        Query query=firebaseFirestore.collection("Users").orderBy("name")
+        Query query=firebaseFirestore.collection("Users").orderBy("lowercaseName")
                 .startAt(name).endAt(name+"\uf8ff");
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

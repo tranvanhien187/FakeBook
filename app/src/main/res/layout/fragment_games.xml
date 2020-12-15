@@ -1,7 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4CAF50">
+    android:background="@drawable/backgroundbanco"
+    android:orientation="vertical">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:background="@drawable/custom_money"
+            android:drawableLeft="@drawable/ic_baseline_monetization_on_24"
+            android:gravity="center"
+            android:id="@+id/txttien"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:textColor="#FFFF"
+            android:text="Tiền"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/txtthoigian"
+            android:layout_width="220dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/custom_money"
+            android:text="Thời gian"
+            android:textColor="#FFFF"
+            android:textSize="30dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/img_xx1"
+            android:layout_width="100dp"
+            android:src="@drawable/animation_xucxac"
+            android:layout_height="100dp"/>
+        <ImageView
+            android:id="@+id/img_xx2"
+            android:layout_width="100dp"
+            android:src="@drawable/animation_xucxac"
+            android:layout_height="100dp"/>
+        <ImageView
+            android:id="@+id/img_xx3"
+            android:layout_width="100dp"
+            android:src="@drawable/animation_xucxac"
+            android:layout_height="100dp"/>
+    </LinearLayout>
+    <GridView
+        android:padding="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:id="@+id/gvbandatcuoc"
+        android:numColumns="3"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+    </GridView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_vanmoi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/yellow"
+        android:layout_gravity="center"
+        android:text="Ván mới"/>
+
+</LinearLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/imgicon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/icon_bau"/>
+    <TextView
+        android:id="@+id/txttiencuoc"
+        android:background="@drawable/custom_money"
+        android:layout_width="100dp"
+        android:drawableLeft="@drawable/ic_baseline_monetization_on_24"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#FFF"
+        android:text="tiền cược"/>
+
+</LinearLayout>
