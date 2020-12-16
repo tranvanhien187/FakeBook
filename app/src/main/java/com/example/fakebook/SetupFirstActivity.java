@@ -59,7 +59,6 @@ public class SetupFirstActivity extends AppCompatActivity {
         setupImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SetupFirstActivity.this, "ABC", Toast.LENGTH_LONG).show();
                 CropImage.activity()
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .start(SetupFirstActivity.this);

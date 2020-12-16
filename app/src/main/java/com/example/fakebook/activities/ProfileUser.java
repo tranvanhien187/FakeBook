@@ -21,7 +21,6 @@ import com.example.fakebook.adapters.BlogAdapter;
 import com.example.fakebook.adapters.FriendProfileAdapter;
 import com.example.fakebook.model.BlogPost;
 import com.example.fakebook.model.FriendRequests;
-import com.example.fakebook.model.Notification;
 import com.example.fakebook.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,14 +33,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -50,7 +45,7 @@ public class ProfileUser extends AppCompatActivity {
     View view;
     CircleImageView imgAvatarProfileUser;
     TextView txtNameProfileUser,txtDateProfileUser,txtEmailProfileUser,txtSexProfileUser;
-    Button btnAdd,btnCancel,btnFriend;
+    Button btnSendFriendRequest, btnCancelSendFriendRequest,btnFriend,btnAccept;
     RecyclerView recyclerViewFriendProfileUser,recyclerViewMyPostProfileUser;
     FriendProfileAdapter adapterFriend;
 
@@ -62,12 +57,12 @@ public class ProfileUser extends AppCompatActivity {
     String emailProfile;
 
     String emailTmp=mAuth.getCurrentUser().getEmail();
-    String email=emailTmp.substring(0,emailTmp.length()-"@gmail.com".length());
+    String emailCurrentUser =emailTmp.substring(0,emailTmp.length()-"@gmail.com".length());
 
     private List<String> blogID = new ArrayList<>();
     private List<BlogPost> blogList;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
 
@@ -108,45 +103,114 @@ public class ProfileUser extends AppCompatActivity {
             }
         });
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        btnSendFriendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnAdd.setVisibility(View.GONE);
-                btnCancel.setVisibility(View.VISIBLE);
+                btnSendFriendRequest.setVisibility(View.GONE);
+                btnCancelSendFriendRequest.setVisibility(View.VISIBLE);
 
 
-                String emailTmp=mAuth.getCurrentUser().getEmail();
-                final String email=emailTmp.substring(0,emailTmp.length()-"@gmail.com".length());
-
-                final FriendRequests friendRequests=new FriendRequests(email, Calendar.getInstance().getTime());
-                firebaseFirestore.collection("Users").document(user.getEmail())
+                // thêm lời mời kết bạn vào người dùng được hiển thị profile ( lúc tìm kiếm )
+                firebaseFirestore.collection("Users").document(emailProfile)
                         .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        ArrayList<FriendRequests> friendRequestsArrayList= (ArrayList<FriendRequests>) task.getResult().get("friendRequestList");
-                        friendRequestsArrayList.add(friendRequests);
+                        HashMap<String,FriendRequests> friendRequestsHashMap= (HashMap<String, FriendRequests>) task.getResult().get("friendRequestList");
+                        FriendRequests friendRequests=new FriendRequests(emailCurrentUser, Calendar.getInstance().getTime());
+                        friendRequestsHashMap.put(emailCurrentUser,friendRequests);
                         firebaseFirestore.collection("Users").document(user.getEmail())
-                                .update("friendRequestList",friendRequestsArrayList);
+                                .update("friendRequestList",friendRequestsHashMap);
 
-
-                        ArrayList<String> emailFriendsRequestList= (ArrayList<String>) task.getResult().get("requestList");
-                        emailFriendsRequestList.add(email);
-                        firebaseFirestore.collection("Users").document(user.getEmail())
-                                .update("requestList",emailFriendsRequestList);
                     }
                 });
 
-                Map<String, Notification> map=new HashMap<>();
-                map.values();
+                // thêm vào danh dách những lời mời kết bạn đã gửi của Người Dùng Hiện Tại
+                firebaseFirestore.collection("Users").document(emailCurrentUser)
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        HashMap<String,FriendRequests> sendFriendRequestHashMap= (HashMap<String, FriendRequests>) task.getResult().get("sendFriendRequestList");
+                        FriendRequests sendFriendRequest=new FriendRequests(emailProfile, Calendar.getInstance().getTime());
+                        sendFriendRequestHashMap.put(emailProfile,sendFriendRequest);
+                        firebaseFirestore.collection("Users").document(emailCurrentUser)
+                                .update("sendFriendRequestList",sendFriendRequestHashMap);
+                    }
+                });
+
 
             }
         });
-        btnCancel.setOnClickListener(
+        btnCancelSendFriendRequest.setOnClickListener(
                 new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnCancel.setVisibility(View.GONE);
-                btnAdd.setVisibility(View.VISIBLE);
+                btnCancelSendFriendRequest.setVisibility(View.GONE);
+                btnSendFriendRequest.setVisibility(View.VISIBLE);
+
+                firebaseFirestore.collection("Users").document(emailProfile)
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        HashMap<String,FriendRequests> friendRequestsHashMap= (HashMap<String, FriendRequests>) task.getResult().get("friendRequestList");
+                        friendRequestsHashMap.remove(emailCurrentUser);
+                        firebaseFirestore.collection("Users").document(emailProfile)
+                                .update("friendRequestList",friendRequestsHashMap);
+
+                    }
+                });
+
+                firebaseFirestore.collection("Users").document(emailCurrentUser)
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        HashMap<String,FriendRequests> sendFriendRequestHashMap= (HashMap<String, FriendRequests>) task.getResult().get("sendFriendRequestList");
+                        sendFriendRequestHashMap.remove(emailProfile);
+                        firebaseFirestore.collection("Users").document(emailCurrentUser)
+                                .update("sendFriendRequestList",sendFriendRequestHashMap);
+                    }
+                });
+            }
+        });
+
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnAccept.setVisibility(View.GONE);
+                btnFriend.setVisibility(View.VISIBLE);
+
+                firebaseFirestore.collection("Users").document(emailProfile)
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        //thêm bạn bè vào người dùng hiển thị profile ( lúc tìm kiếm)
+                        ArrayList<String> friendList = (ArrayList<String>) task.getResult().get("friendList");
+                        friendList.add(emailCurrentUser);
+                        firebaseFirestore.collection("Users").document(emailProfile)
+                                .update("friendList",friendList);
+                        // huỷ lời mời kết bạn khi đã chấp nhận kết bạn
+                        HashMap<String,FriendRequests> friendRequestsHashMap= (HashMap<String, FriendRequests>) task.getResult().get("friendRequestList");
+                        friendRequestsHashMap.remove(emailCurrentUser);
+                        firebaseFirestore.collection("Users").document(emailProfile)
+                                .update("friendRequestList",friendRequestsHashMap);
+                    }
+                });
+                firebaseFirestore.collection("Users").document(emailCurrentUser)
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        //thêm bạn bè vào người dùng hiện tại
+                        ArrayList<String> friendList = (ArrayList<String>) task.getResult().get("friendList");
+                        friendList.add(emailProfile);
+                        firebaseFirestore.collection("Users").document(emailCurrentUser)
+                                .update("friendList",friendList);
+                        // huỷ gửi lời mời kết bạn khi đã được chấp nhận kết bạn
+                        HashMap<String,FriendRequests> sendFriendRequestHashMap= (HashMap<String, FriendRequests>) task.getResult().get("sendFriendRequestList");
+                        sendFriendRequestHashMap.remove(emailProfile);
+                        firebaseFirestore.collection("Users").document(emailCurrentUser)
+                                .update("sendFriendRequestList",sendFriendRequestHashMap);
+                    }
+                });
             }
         });
 
@@ -160,9 +224,10 @@ public class ProfileUser extends AppCompatActivity {
         txtDateProfileUser=(TextView) findViewById(R.id.txt_date_of_birth_profile_user);
         txtEmailProfileUser=(TextView) findViewById(R.id.txt_email_profile_user);
         txtSexProfileUser=(TextView) findViewById(R.id.txt_sex_profile_user);
-        btnAdd=(Button) findViewById(R.id.btn_add_friend_profile_user);
-        btnCancel=(Button) findViewById(R.id.btn_cancel_add_friend_profile_user);
+        btnSendFriendRequest =(Button) findViewById(R.id.btn_add_friend_profile_user);
+        btnCancelSendFriendRequest =(Button) findViewById(R.id.btn_cancel_add_friend_profile_user);
         btnFriend=(Button) findViewById(R.id.btn_friend_profile_user);
+        btnAccept=(Button) findViewById(R.id.btn_accept_friend_request_profile_user);
         recyclerViewFriendProfileUser=(RecyclerView) findViewById(R.id.recycle_view_friend_profile_user);
         recyclerViewMyPostProfileUser=(RecyclerView) findViewById(R.id.recycle_view_my_post_profile_user);
 
@@ -176,18 +241,28 @@ public class ProfileUser extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     ArrayList<String> friendList = (ArrayList<String>) task.getResult().get("friendList");
-                    ArrayList<String> emailRequestList = (ArrayList<String>) task.getResult().get("requestList");
-                    if(friendList.contains(email))
+                    HashMap<String,FriendRequests> friendRequestsHashMap = (HashMap<String, FriendRequests>) task.getResult().get("friendRequestList");
+                    HashMap<String,FriendRequests> sendFriendRequestsHashMap = (HashMap<String, FriendRequests>) task.getResult().get("sendFriendRequestList");
+                    if(friendList.contains(emailCurrentUser))
                     {
-                        btnAdd.setVisibility(View.GONE);
-                        btnCancel.setVisibility(View.GONE);
+                        btnSendFriendRequest.setVisibility(View.GONE);
+                        btnCancelSendFriendRequest.setVisibility(View.GONE);
                         btnFriend.setVisibility(View.VISIBLE);
+                        btnAccept.setVisibility(View.GONE);
                     }
-                    else if(emailRequestList.contains(email))
+                    else if(friendRequestsHashMap.containsKey(emailCurrentUser))
                     {
-                        btnAdd.setVisibility(View.GONE);
-                        btnCancel.setVisibility(View.VISIBLE);
+                        btnSendFriendRequest.setVisibility(View.GONE);
+                        btnCancelSendFriendRequest.setVisibility(View.VISIBLE);
                         btnFriend.setVisibility(View.GONE);
+                        btnAccept.setVisibility(View.GONE);
+                    }
+                    else if(sendFriendRequestsHashMap.containsKey(emailCurrentUser))
+                    {
+                        btnSendFriendRequest.setVisibility(View.GONE);
+                        btnCancelSendFriendRequest.setVisibility(View.GONE);
+                        btnFriend.setVisibility(View.GONE);
+                        btnAccept.setVisibility(View.VISIBLE);
                     }
                 }
                 else {

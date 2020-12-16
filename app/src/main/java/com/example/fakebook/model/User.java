@@ -15,9 +15,9 @@ public class User {
     private String lowercaseName;
     private ArrayList<Notification> notificationList=new ArrayList<>();
     private ArrayList<String> friendList=new ArrayList<>();
-    private ArrayList<FriendRequests> friendRequestList=new ArrayList<>();          // uId
-    private ArrayList<String> requestList=new ArrayList<>();
-    private HashMap<String, Integer> sentimentalRatings;  // key : uId , value : points
+    private HashMap<String,FriendRequests> friendRequestList=new HashMap<>();
+    private HashMap<String,FriendRequests> sendFriendRequestList=new HashMap<>();
+    private HashMap<String, Integer> sentimentalRatings = new HashMap<>();  // key : uId , value : points
     public User() {
     }
 
@@ -95,12 +95,12 @@ public class User {
         this.friendList = friendList;
     }
 
-    public ArrayList<FriendRequests> getFriendRequestList() {
+    public HashMap<String,FriendRequests> getFriendRequestList() {
         return friendRequestList;
         // lam ran doi ten di ms push dc
     }
 
-    public void setFriendRequestList(ArrayList<FriendRequests> friendRequestList) {
+    public void setFriendRequestList(HashMap<String,FriendRequests> friendRequestList) {
         this.friendRequestList = friendRequestList;
     }
 
@@ -112,11 +112,11 @@ public class User {
         this.sentimentalRatings = sentimentalRatings;
     }
 
-    public ArrayList<String> getRequestList() {
-        return requestList;
+    public HashMap<String, FriendRequests> getSendFriendRequestList() {
+        return sendFriendRequestList;
     }
 
-    public void setRequestList(ArrayList<String> requestList) {
-        this.requestList = requestList;
+    public void setSendFriendRequestList(HashMap<String, FriendRequests> sendFriendRequestList) {
+        this.sendFriendRequestList = sendFriendRequestList;
     }
 }

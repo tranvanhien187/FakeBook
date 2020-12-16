@@ -43,14 +43,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAdapter.ViewHolder> {
 
-    ArrayList<FriendRequests> friendRequestsListCurrent;
+    HashMap<String,FriendRequests> friendRequestsListCurrent;
     Context context;
+    ArrayList<FriendRequests> friendRequestsValues;
 
 
-    public FriendRequestsAdapter(ArrayList<FriendRequests> friendRequestsListCurrent, Context context) {
+
+    public FriendRequestsAdapter(HashMap<String,FriendRequests> friendRequestsListCurrent, Context context) {
         this.friendRequestsListCurrent = friendRequestsListCurrent;
         this.context = context;
-
+        friendRequestsValues=new ArrayList<>();
+        friendRequestsValues.addAll(friendRequestsListCurrent.values());
     }
 
     @NonNull
@@ -63,12 +66,13 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.binding(friendRequestsListCurrent.get(position),position);
+
+        holder.binding(friendRequestsValues.get(position),position);
     }
 
     @Override
     public int getItemCount() {
-        return friendRequestsListCurrent.size();
+        return friendRequestsValues.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -129,8 +133,7 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                     Log.d("AAA",friendEmail);
                     myEmail=myEmail.substring(0,myEmail.length()-"@gmail.com".length());
                     final String finalFriendEmail = friendEmail;
-                    firebaseFirestore.collection("Users")
-                            .document(myEmail).collection("Posts")
+                    firebaseFirestore.collection("Users").document(myEmail).collection("Posts")
                             .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -201,14 +204,15 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                                     .update("friendList",friendList);
 
                             // xoá lời mời kết bạn ở người dùng hiện tại khi nhấn đồng ý kết bạn
-                            final ArrayList<FriendRequests> friendRequestsArrayListUpdate = (ArrayList<FriendRequests>) task.getResult().get("friendRequestList");
+                            final HashMap<String,FriendRequests> friendRequestsHashMap = (HashMap<String, FriendRequests>) task.getResult().get("friendRequestList");
+                            friendRequestsHashMap.remove(friendRequestCurrent.getEmail());
                             firebaseFirestore.collection("Users")
                                     .document(emailCurUser)
-                                    .update("friendRequestList",newArray(friendRequestsArrayListUpdate,position)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    .update("friendRequestList",friendRequestsHashMap ).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        friendRequestsListCurrent.remove(position);
+                                        friendRequestsValues.remove(position);
                                         notifyDataSetChanged();
                                         linearLayout.setVisibility(View.VISIBLE);
                                         tvAcceptRequests.setVisibility(View.GONE);
@@ -259,14 +263,15 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            final ArrayList<FriendRequests> friendRequestsListUpdate = (ArrayList<FriendRequests>) task.getResult().get("friendRequestList");
+                            final HashMap<String,FriendRequests> friendRequestsHashMap = (HashMap<String, FriendRequests>) task.getResult().get("friendRequestList");
+                            friendRequestsHashMap.remove(friendRequestCurrent.getEmail());
                             firebaseFirestore.collection("Users")
                                     .document(emailCurUser)
-                                    .update("friendRequestList",newArray(friendRequestsListUpdate,position)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    .update("friendRequestList",friendRequestsHashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        friendRequestsListCurrent.remove(position);
+                                        friendRequestsValues.remove(position);
                                         notifyDataSetChanged();
                                         linearLayout.setVisibility(View.VISIBLE);
                                         tvDeclineRequests.setVisibility(View.GONE);

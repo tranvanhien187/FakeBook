@@ -116,6 +116,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_button_add_friend"/>
+            <Button
+                android:visibility="gone"
+                android:layout_weight="0.8"
+                android:textAllCaps="false"
+                android:id="@+id/btn_accept_friend_request_profile_user"
+                android:layout_marginTop="5dp"
+                android:textColor="#FFF"
+                android:text="Chấp nhận lời mời kết bạn"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button_add_friend"/>
         </LinearLayout>
         <ImageView
             android:src="@drawable/dash"
